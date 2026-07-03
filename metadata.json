@@ -1,0 +1,8 @@
+{
+  "name": "Daily Journal",
+  "description": "A daily journal website to log and analyze my days, storing information in Craft.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
