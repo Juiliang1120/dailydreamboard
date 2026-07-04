@@ -256,7 +256,7 @@
         slider.value = 3;
         emojiDisplay.textContent = emojis[3];
       } catch (error) {
-        console.error('Error saving entry:', error);
+        console.error("Craft Error Details:", error);
         showStatus('Failed to send to Craft. Check console logs.', 'text-[#ffb3b3]');
       } finally {
         saveBtn.disabled = false;
