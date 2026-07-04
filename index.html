@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#9774B5">
+  <meta name="description" content="Daily Journal — capture your mood and save it to Craft.">
   <title>Daily Journal</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
@@ -14,7 +16,7 @@
       align-items: center;
       font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     }
-    
+
     .glass-card {
       background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(20px);
@@ -23,12 +25,12 @@
       box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
     }
 
-    /* Custom range slider styling */
     input[type=range] {
-      -webkit-appearance: none; 
-      width: 100%; 
-      background: transparent; 
+      -webkit-appearance: none;
+      width: 100%;
+      background: transparent;
     }
+
     input[type=range]::-webkit-slider-thumb {
       -webkit-appearance: none;
       height: 28px;
@@ -37,12 +39,14 @@
       background: #ffffff;
       cursor: pointer;
       margin-top: -10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
       transition: transform 0.1s ease;
     }
+
     input[type=range]::-webkit-slider-thumb:hover {
       transform: scale(1.1);
     }
+
     input[type=range]::-webkit-slider-runnable-track {
       width: 100%;
       height: 8px;
@@ -50,76 +54,130 @@
       background: rgba(255, 255, 255, 0.25);
       border-radius: 4px;
     }
+
     input[type=range]:focus {
       outline: none;
+    }
+
+    .sr-only-focusable:focus {
+      position: static;
+      width: auto;
+      height: auto;
+      margin: 0;
+      overflow: visible;
+      clip: auto;
+      white-space: normal;
     }
   </style>
 </head>
 <body class="text-white p-4">
+  <a href="#journal-input" class="sr-only sr-only-focusable absolute top-3 left-3 bg-white/20 backdrop-blur px-3 py-2 rounded-lg text-sm">Skip to journal</a>
 
-  <div class="glass-card w-full max-w-lg rounded-[2rem] p-8 md:p-10 flex flex-col gap-8 relative">
-    
-    <button id="settings-btn" class="absolute top-6 right-6 text-white/60 hover:text-white transition-colors text-xl focus:outline-none" title="Configure Craft API">
+  <main class="glass-card w-full max-w-lg rounded-[2rem] p-8 md:p-10 flex flex-col gap-8 relative" aria-labelledby="page-title">
+    <button
+      id="settings-btn"
+      class="absolute top-6 right-6 text-white/60 hover:text-white transition-colors text-xl focus:outline-none focus:ring-2 focus:ring-white/50 rounded-lg p-1"
+      title="Configure Craft API"
+      aria-label="Open Craft API settings"
+      aria-expanded="false"
+      aria-controls="settings-panel"
+      type="button"
+    >
       ⚙️
     </button>
 
-    <div class="text-center">
-      <h1 class="text-3xl font-bold tracking-wide mb-2 text-white">Daily Journal</h1>
+    <header class="text-center">
+      <h1 id="page-title" class="text-3xl font-bold tracking-wide mb-2 text-white">Daily Journal</h1>
       <p class="text-xs text-white/70 uppercase tracking-widest font-medium">Capture your day</p>
-    </div>
+    </header>
 
-    <div id="settings-panel" class="hidden flex flex-col gap-4 bg-black/10 border border-white/10 rounded-2xl p-5 transition-all">
-      <h2 class="text-xs font-semibold tracking-widest text-white/80 uppercase">⚙️ Craft API Configuration</h2>
+    <section id="settings-panel" class="hidden flex flex-col gap-4 bg-black/10 border border-white/10 rounded-2xl p-5 transition-all" aria-label="Craft API configuration">
+      <h2 class="text-xs font-semibold tracking-widest text-white/80 uppercase">Craft API Configuration</h2>
+
       <div class="flex flex-col gap-1.5">
-        <label class="text-[11px] text-white/60 uppercase tracking-wider">Craft API Token</label>
-        <input type="password" id="api-token-input" class="w-full bg-white/10 border border-white/20 rounded-xl p-3 text-sm text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-white/30" placeholder="paste your secret token here...">
+        <label for="api-token-input" class="text-[11px] text-white/60 uppercase tracking-wider">Craft API Token</label>
+        <input
+          type="password"
+          id="api-token-input"
+          autocomplete="off"
+          class="w-full bg-white/10 border border-white/20 rounded-xl p-3 text-sm text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-white/30"
+          placeholder="Paste your Craft API token"
+        >
       </div>
+
       <div class="flex flex-col gap-1.5">
-        <label class="text-[11px] text-white/60 uppercase tracking-wider">Target Page ID</label>
-        <input type="text" id="page-id-input" class="w-full bg-white/10 border border-white/20 rounded-xl p-3 text-sm text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-white/30" placeholder="e.g., 2a6dbbc2-4e75-8188-ccea-28065ceef39f">
+        <label for="page-id-input" class="text-[11px] text-white/60 uppercase tracking-wider">Target Page ID</label>
+        <input
+          type="text"
+          id="page-id-input"
+          inputmode="text"
+          class="w-full bg-white/10 border border-white/20 rounded-xl p-3 text-sm text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-white/30"
+          placeholder="2a6dbbc2-4e75-8188-ccea-28065ceef39f"
+        >
       </div>
-      <button id="save-settings-btn" class="w-full py-2.5 bg-white/20 hover:bg-white/30 rounded-xl text-xs font-semibold tracking-wide transition-all active:scale-[0.98]">
+
+      <button id="save-settings-btn" class="w-full py-2.5 bg-white/20 hover:bg-white/30 rounded-xl text-xs font-semibold tracking-wide transition-all active:scale-[0.98]" type="button">
         Save Credentials Locally
       </button>
-    </div>
 
-    <div class="flex flex-col gap-4 mt-2">
-      <h2 class="text-xs font-semibold tracking-widest text-white/80 uppercase">WHAT'S YOUR VIBE TODAY?</h2>
+      <p class="text-[11px] leading-5 text-white/60">
+        Note: credentials are stored in your browser using localStorage. For better security, consider using a backend.
+      </p>
+    </section>
+
+    <section class="flex flex-col gap-4 mt-2" aria-labelledby="vibe-title">
+      <h2 id="vibe-title" class="text-xs font-semibold tracking-widest text-white/80 uppercase">What&#39;s your vibe today?</h2>
       <div class="text-center h-24 flex items-center justify-center">
-        <span id="emoji-display" class="text-7xl transition-transform duration-300 transform select-none">😐</span>
+        <span id="emoji-display" class="text-7xl transition-transform duration-300 transform select-none" aria-live="polite" aria-atomic="true">😐</span>
       </div>
       <div class="px-2">
-        <input type="range" id="vibe-slider" min="1" max="5" value="3" class="w-full">
-        <div class="flex justify-between text-xs text-white/70 font-medium mt-3 uppercase tracking-wider">
+        <label for="vibe-slider" class="sr-only">Mood level</label>
+        <input type="range" id="vibe-slider" min="1" max="5" value="3" class="w-full" aria-describedby="vibe-range-labels">
+        <div id="vibe-range-labels" class="flex justify-between text-xs text-white/70 font-medium mt-3 uppercase tracking-wider">
           <span>Terrible</span>
           <span>Amazing</span>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="flex flex-col gap-3 mt-2">
-      <h2 class="text-xs font-semibold tracking-widest text-white/80 uppercase">TELL ME MORE ABOUT IT...</h2>
-      <textarea id="journal-input" rows="5" class="w-full bg-white/10 border border-white/20 rounded-2xl p-5 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/40 focus:bg-white/15 transition-all resize-none shadow-inner" placeholder="Powered by iced coffee and absolute chaos..."></textarea>
-    </div>
+    <section class="flex flex-col gap-3 mt-2" aria-labelledby="journal-title">
+      <h2 id="journal-title" class="text-xs font-semibold tracking-widest text-white/80 uppercase">Tell me more about it...</h2>
+      <form id="journal-form" class="flex flex-col gap-4">
+        <div class="flex flex-col gap-1.5">
+          <label for="journal-input" class="sr-only">Journal entry</label>
+          <textarea
+            id="journal-input"
+            rows="5"
+            class="w-full bg-white/10 border border-white/20 rounded-2xl p-5 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/40 focus:bg-white/15 resize-none"
+            placeholder="Write a few thoughts about your day..."
+            required
+          ></textarea>
+        </div>
 
-    <div class="mt-2">
-      <button id="save-btn" class="w-full py-4 bg-white/20 hover:bg-white/30 text-white font-semibold tracking-wide rounded-2xl transition-all duration-300 border border-white/30 flex items-center justify-center gap-2 hover:shadow-[0_8px_16px_rgba(0,0,0,0.1)] hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed">
-        <span id="btn-text">Save Entry &check;</span>
-      </button>
-      <div id="status-message" class="text-center text-sm font-medium mt-4 h-5 opacity-0 transition-opacity duration-300"></div>
-    </div>
-  </div>
+        <div class="mt-2">
+          <button
+            id="save-btn"
+            class="w-full py-4 bg-white/20 hover:bg-white/30 text-white font-semibold tracking-wide rounded-2xl transition-all duration-300 border border-white/30 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+            type="submit"
+          >
+            <span id="btn-text">Save Entry &check;</span>
+          </button>
+          <div id="status-message" class="text-center text-sm font-medium mt-4 min-h-5 opacity-0 transition-opacity duration-300" role="status" aria-live="polite"></div>
+        </div>
+      </form>
+    </section>
+  </main>
 
   <script>
-    const emojis = {
-      1: '😭', // Terrible
-      2: '😔', // Bad
-      3: '😐', // Okay
-      4: '🙂', // Good
-      5: '🤩'  // Amazing
+    const EMOJIS = {
+      1: '😭',
+      2: '😔',
+      3: '😐',
+      4: '🙂',
+      5: '🤩'
     };
-    
-    const vibeLabels = {
+
+    const VIBE_LABELS = {
       1: 'Terrible',
       2: 'Bad',
       3: 'Okay',
@@ -127,79 +185,101 @@
       5: 'Amazing'
     };
 
-    const slider = document.getElementById('vibe-slider');
-    const emojiDisplay = document.getElementById('emoji-display');
-    const saveBtn = document.getElementById('save-btn');
-    const btnText = document.getElementById('btn-text');
-    const journalInput = document.getElementById('journal-input');
-    const statusMsg = document.getElementById('status-message');
+    const DEFAULT_PAGE_ID = '2a6dbbc2-4e75-8188-ccea-28065ceef39f';
+    const STORAGE_KEYS = {
+      token: 'craft_api_token',
+      pageId: 'craft_page_id'
+    };
 
-    // Settings Panel Selectors
-    const settingsBtn = document.getElementById('settings-btn');
-    const settingsPanel = document.getElementById('settings-panel');
-    const apiTokenInput = document.getElementById('api-token-input');
-    const pageIdInput = document.getElementById('page-id-input');
-    const saveSettingsBtn = document.getElementById('save-settings-btn');
+    const elements = {
+      slider: document.getElementById('vibe-slider'),
+      emojiDisplay: document.getElementById('emoji-display'),
+      form: document.getElementById('journal-form'),
+      saveBtn: document.getElementById('save-btn'),
+      btnText: document.getElementById('btn-text'),
+      journalInput: document.getElementById('journal-input'),
+      statusMsg: document.getElementById('status-message'),
+      settingsBtn: document.getElementById('settings-btn'),
+      settingsPanel: document.getElementById('settings-panel'),
+      apiTokenInput: document.getElementById('api-token-input'),
+      pageIdInput: document.getElementById('page-id-input'),
+      saveSettingsBtn: document.getElementById('save-settings-btn')
+    };
 
-    // Load Credentials from localStorage on start
-    apiTokenInput.value = localStorage.getItem('craft_api_token') || '';
-    pageIdInput.value = localStorage.getItem('craft_page_id') || '2a6dbbc2-4e75-8188-ccea-28065ceef39f';
+    let statusTimeout;
 
-    // Toggle Settings Panel
-    settingsBtn.addEventListener('click', () => {
-      settingsPanel.classList.toggle('hidden');
-    });
+    function setStatus(text, colorClass) {
+      clearTimeout(statusTimeout);
+      elements.statusMsg.className = `text-center text-sm font-medium mt-4 min-h-5 transition-opacity duration-300 ${colorClass}`;
+      elements.statusMsg.textContent = text;
+      elements.statusMsg.style.opacity = '1';
 
-    // Save Settings Locally
-    saveSettingsBtn.addEventListener('click', () => {
-      localStorage.setItem('craft_api_token', apiTokenInput.value.trim());
-      localStorage.setItem('craft_page_id', pageIdInput.value.trim());
-      showStatus('Credentials saved to local browser storage!', 'text-[#c6f6d5]');
-      settingsPanel.classList.add('hidden');
-    });
+      statusTimeout = setTimeout(() => {
+        elements.statusMsg.style.opacity = '0';
+      }, 4000);
+    }
 
-    // Emoji updater
-    slider.addEventListener('input', (e) => {
-      const val = e.target.value;
-      
-      if (emojiDisplay.textContent !== emojis[val]) {
-        emojiDisplay.style.transform = 'scale(0.5)';
+    function isValidPageId(value) {
+      return /^[0-9a-fA-F-]{36}$/.test(value.trim());
+    }
+
+    function getMoodValue() {
+      const value = Number(elements.slider.value);
+      return Number.isInteger(value) && value >= 1 && value <= 5 ? value : 3;
+    }
+
+    function renderMood(value) {
+      const emoji = EMOJIS[value] || EMOJIS[3];
+      if (elements.emojiDisplay.textContent === emoji) return;
+
+      elements.emojiDisplay.style.transform = 'scale(0.5)';
+      setTimeout(() => {
+        elements.emojiDisplay.textContent = emoji;
+        elements.emojiDisplay.style.transform = 'scale(1.1)';
         setTimeout(() => {
-          emojiDisplay.textContent = emojis[val];
-          emojiDisplay.style.transform = 'scale(1.1)';
-          setTimeout(() => {
-            emojiDisplay.style.transform = 'scale(1)';
-          }, 150);
-        }, 100);
-      }
-    });
+          elements.emojiDisplay.style.transform = 'scale(1)';
+        }, 150);
+      }, 100);
+    }
 
-    // Save Action to actual Craft API
-    saveBtn.addEventListener('click', async () => {
-      const vibeValue = slider.value;
-      const vibeText = vibeLabels[vibeValue];
-      const content = journalInput.value.trim();
+    function loadSettings() {
+      elements.apiTokenInput.value = localStorage.getItem(STORAGE_KEYS.token) || '';
+      elements.pageIdInput.value = localStorage.getItem(STORAGE_KEYS.pageId) || DEFAULT_PAGE_ID;
+    }
 
-      // Retrieve keys securely from user's browser storage
-      const token = localStorage.getItem('craft_api_token');
-      const targetPageId = localStorage.getItem('craft_page_id');
+    function saveSettings() {
+      const token = elements.apiTokenInput.value.trim();
+      const pageId = elements.pageIdInput.value.trim();
 
-      if (!token) {
-        showStatus('Please click the ⚙️ icon to configure your Craft Token first!', 'text-[#ffb3b3]');
-        settingsPanel.classList.remove('hidden');
+      if (!pageId) {
+        setStatus('Please enter a target page ID.', 'text-[#ffb3b3]');
+        elements.pageIdInput.focus();
         return;
       }
 
-      if (!content) {
-        showStatus('Please tell me more about your day before saving!', 'text-[#ffb3b3]');
-        journalInput.focus();
+      if (!isValidPageId(pageId)) {
+        setStatus('That page ID does not look valid. Please check it and try again.', 'text-[#ffb3b3]');
+        elements.pageIdInput.focus();
         return;
       }
 
-      // Loading state
-      saveBtn.disabled = true;
-      btnText.innerHTML = '<span class="animate-pulse">Writing to Craft...</span>';
+      localStorage.setItem(STORAGE_KEYS.token, token);
+      localStorage.setItem(STORAGE_KEYS.pageId, pageId);
+      setStatus('Credentials saved to local browser storage!', 'text-[#c6f6d5]');
+      elements.settingsPanel.classList.add('hidden');
+      elements.settingsBtn.setAttribute('aria-expanded', 'false');
+    }
 
+    function toggleSettingsPanel() {
+      const isHidden = elements.settingsPanel.classList.toggle('hidden');
+      elements.settingsBtn.setAttribute('aria-expanded', String(!isHidden));
+      if (!isHidden) {
+        elements.apiTokenInput.focus();
+      }
+    }
+
+    function buildPayload(content, vibeValue) {
+      const vibeText = VIBE_LABELS[vibeValue] || VIBE_LABELS[3];
       const dateStr = new Date().toLocaleDateString('en-US', {
         weekday: 'long',
         year: 'numeric',
@@ -207,79 +287,129 @@
         day: 'numeric'
       });
 
-      const payload = {
+      return {
         blocks: [
           {
-            type: "text",
-            textStyle: "h3",
+            type: 'text',
+            textStyle: 'h3',
             markdown: `### ${dateStr}`
           },
           {
-            type: "text",
-            decorations: ["quote", "callout"],
-            markdown: `<callout>> Vibe: ${vibeText} ${emojis[vibeValue]}</callout>`
+            type: 'text',
+            decorations: ['quote', 'callout'],
+            markdown: `<callout>> Vibe: ${vibeText} ${EMOJIS[vibeValue] || EMOJIS[3]}</callout>`
           },
           {
-            type: "text",
+            type: 'text',
             markdown: content
           },
           {
-            type: "line",
-            lineStyle: "regular",
-            markdown: "*****"
+            type: 'line',
+            lineStyle: 'regular',
+            markdown: '*****'
           }
         ],
         position: {
-          position: "end",
-          pageId: targetPageId
+          position: 'end',
+          pageId: localStorage.getItem(STORAGE_KEYS.pageId) || DEFAULT_PAGE_ID
         }
       };
+    }
+
+    async function sendToCraft(payload, token) {
+      const response = await fetch('https://api.craft.do/v1/blocks', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const contentType = response.headers.get('content-type') || '';
+      const responseText = contentType.includes('application/json') ? JSON.stringify(await response.json()) : await response.text();
+
+      if (!response.ok) {
+        throw new Error(`Craft API error (${response.status}): ${responseText || 'No response body'}`);
+      }
+
+      return responseText;
+    }
+
+    async function handleSave(event) {
+      event.preventDefault();
+
+      const content = elements.journalInput.value.trim();
+      const token = localStorage.getItem(STORAGE_KEYS.token);
+      const pageId = localStorage.getItem(STORAGE_KEYS.pageId) || DEFAULT_PAGE_ID;
+      const vibeValue = getMoodValue();
+
+      if (!pageId || !isValidPageId(pageId)) {
+        setStatus('Please configure a valid target page ID before saving.', 'text-[#ffb3b3]');
+        elements.settingsPanel.classList.remove('hidden');
+        elements.settingsBtn.setAttribute('aria-expanded', 'true');
+        elements.pageIdInput.focus();
+        return;
+      }
+
+      if (!token) {
+        setStatus('Please click the settings icon to add your Craft token first.', 'text-[#ffb3b3]');
+        elements.settingsPanel.classList.remove('hidden');
+        elements.settingsBtn.setAttribute('aria-expanded', 'true');
+        elements.apiTokenInput.focus();
+        return;
+      }
+
+      if (!content) {
+        setStatus('Please tell me more about your day before saving!', 'text-[#ffb3b3]');
+        elements.journalInput.focus();
+        return;
+      }
+
+      elements.saveBtn.disabled = true;
+      elements.btnText.innerHTML = '<span class="animate-pulse">Writing to Craft...</span>';
 
       try {
-        const response = await fetch('https://api.craft.do/v1/blocks', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify(payload)
-        });
-        
-        if (!response.ok) {
-  throw new Error(`Craft API 連線失敗！狀態碼: ${response.status}`);
-}
+        const payload = buildPayload(content, vibeValue);
+        await sendToCraft(payload, token);
 
-const data = await response.json();
-console.log('Craft 成功回應:', data);
-showStatus('Saved successfully!', 'text-[#b3ffb3]');
-        
-        // Reset entry form
-        journalInput.value = '';
-        slider.value = 3;
-        emojiDisplay.textContent = emojis[3];
+        setStatus('Saved successfully!', 'text-[#c6f6d5]');
+        elements.journalInput.value = '';
+        elements.slider.value = '3';
+        renderMood(3);
       } catch (error) {
-        console.error("Craft Error Details:", error);
-        showStatus('Failed to send to Craft. Check console logs.', 'text-[#ffb3b3]');
+        console.error('Craft Error Details:', error);
+
+        const message = String(error?.message || error);
+        let userMessage = 'Failed to send to Craft. Check console logs.';
+
+        if (message.includes('401') || message.includes('403')) {
+          userMessage = 'Your Craft token was rejected. Please check it and try again.';
+        } else if (message.includes('404')) {
+          userMessage = 'The target page could not be found. Please verify the page ID.';
+        } else if (message.includes('429')) {
+          userMessage = 'Craft rate-limited the request. Please wait a moment and try again.';
+        } else if (message.includes('fetch')) {
+          userMessage = 'Network error: unable to reach Craft right now.';
+        }
+
+        setStatus(userMessage, 'text-[#ffb3b3]');
       } finally {
-        saveBtn.disabled = false;
-        btnText.innerHTML = 'Save Entry &check;';
+        elements.saveBtn.disabled = false;
+        elements.btnText.innerHTML = 'Save Entry &check;';
       }
+    }
+
+    elements.slider.addEventListener('input', (e) => {
+      renderMood(Number(e.target.value));
     });
 
-    let statusTimeout;
-    function showStatus(text, colorClass) {
-      clearTimeout(statusTimeout);
-      
-      statusMsg.className = `text-center text-sm font-medium mt-4 h-5 transition-opacity duration-300 ${colorClass}`;
-      statusMsg.textContent = text;
-      
-      void statusMsg.offsetWidth;
-      statusMsg.style.opacity = '1';
+    elements.settingsBtn.addEventListener('click', toggleSettingsPanel);
+    elements.saveSettingsBtn.addEventListener('click', saveSettings);
+    elements.form.addEventListener('submit', handleSave);
 
-      statusTimeout = setTimeout(() => {
-        statusMsg.style.opacity = '0';
-      }, 4000);
-    }
+    loadSettings();
+    renderMood(getMoodValue());
   </script>
 </body>
 </html>
