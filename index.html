@@ -317,14 +317,13 @@
     }
 
     async function sendToCraft(payload, token) {
-      const response = await fetch('https://api.craft.do/v1/blocks', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(payload)
-      });
+      const res = await fetch('/api/craft', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(yourData)
+});
 
       const contentType = response.headers.get('content-type') || '';
       const responseText = contentType.includes('application/json') ? JSON.stringify(await response.json()) : await response.text();
